@@ -1,0 +1,4 @@
+before_install:
+    - cabal install alex && rm -rf ~/.ghc/
+    - alex --version
+language: haskell

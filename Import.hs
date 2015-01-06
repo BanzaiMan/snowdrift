@@ -40,7 +40,7 @@ import           Yesod.Form.Bootstrap3         as Import
 import           Yesod (languages)
 import           Data.List (sortBy, (\\), nub)
 
-import GHC.Exts (IsList(..))
+--import GHC.Exts (IsList(..))
 import qualified Data.Map as M
 import qualified Data.Set as S
 
@@ -54,16 +54,27 @@ infixr 5 <>
 (<>) = mappend
 #endif
 
+{-
 instance Ord a => IsList (Set a) where
     type Item (Set a) = a
     fromList = S.fromList
     toList = S.toList
+-}
+
+class ToList a where
+	toList :: a b -> [b]
+
+instance ToList [] where
+	toList = id
+
+instance ToList Set where
+	toList = S.toList
 
 on_ :: Esqueleto query expr backend => expr (Value Bool) -> query ()
 on_ = Database.Esqueleto.on
 
 -- Like Database.Esqueleto.valList, but more generic.
-valList :: (Esqueleto query expr backend, PersistField typ, IsList l, typ ~ Item l) => l -> expr (ValueList typ)
+valList :: (Esqueleto query expr backend, PersistField typ, ToList l) => l typ -> expr (ValueList typ)
 valList = Database.Esqueleto.valList . toList
 
 infix 4 `notDistinctFrom`
