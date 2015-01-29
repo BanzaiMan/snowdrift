@@ -4,3 +4,6 @@ before_install:
 language: haskell
 script: cabal configure --enable-tests && cabal build
 
+after_script:
+    - true
+    
